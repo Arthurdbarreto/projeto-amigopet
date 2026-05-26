@@ -1,0 +1,60 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="flex justify-content-between align-items-center mb-4">
+                <h5>Tutores</h5>
+                <p-button label="Novo Tutor" icon="pi pi-plus" (click)="openNew()"></p-button>
+            </div>
+
+            <p-table [value]="tutors" [loading]="loading" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Gênero</th>
+                        <th>Idade</th>
+                        <th>Código</th>
+                        <th>Ações</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-tutor>
+                    <tr>
+                        <td>{{ tutor.name }}</td>
+                        <td>{{ tutor.gender }}</td>
+                        <td>{{ tutor.age }}</td>
+                        <td>{{ tutor.code }}</td>
+                        <td>
+                            <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text mr-2" (click)="editTutor(tutor)"></p-button>
+                            <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-text p-button-danger" (click)="deleteTutor(tutor)"></p-button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<p-dialog header="{{ editMode ? 'Editar Tutor' : 'Novo Tutor' }}" [(visible)]="dialogVisible" [style]="{width: '450px'}" [modal]="true">
+    <div class="field">
+        <label for="name">Nome</label>
+        <input id="name" type="text" pInputText [(ngModel)]="tutor.name" class="w-full">
+    </div>
+    <div class="field">
+        <label for="gender">Gênero</label>
+        <input id="gender" type="text" pInputText [(ngModel)]="tutor.gender" class="w-full">
+    </div>
+    <div class="field">
+        <label for="age">Idade</label>
+        <input id="age" type="text" pInputText [(ngModel)]="tutor.age" class="w-full">
+    </div>
+    <div class="field">
+        <label for="code">Código</label>
+        <input id="code" type="text" pInputText [(ngModel)]="tutor.code" class="w-full">
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button label="Cancelar" icon="pi pi-times" styleClass="p-button-text" (click)="dialogVisible=false"></p-button>
+        <p-button label="Salvar" icon="pi pi-check" (click)="saveTutor()"></p-button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>

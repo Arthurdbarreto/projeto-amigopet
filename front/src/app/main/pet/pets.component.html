@@ -1,0 +1,66 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="flex justify-content-between align-items-center mb-4">
+                <h5>Pets</h5>
+                <p-button label="Novo Pet" icon="pi pi-plus" (click)="openNew()"></p-button>
+            </div>
+
+            <p-table [value]="pets" [loading]="loading" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Gênero</th>
+                        <th>Cor</th>
+                        <th>Raça</th>
+                        <th>ID Tutor</th>
+                        <th>Ações</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-pet>
+                    <tr>
+                        <td>{{ pet.name }}</td>
+                        <td>{{ pet.gender }}</td>
+                        <td>{{ pet.color }}</td>
+                        <td>{{ pet.breed }}</td>
+                        <td>{{ pet.id_tutor }}</td>
+                        <td>
+                            <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text mr-2" (click)="editPet(pet)"></p-button>
+                            <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-text p-button-danger" (click)="deletePet(pet)"></p-button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<p-dialog header="{{ editMode ? 'Editar Pet' : 'Novo Pet' }}" [(visible)]="dialogVisible" [style]="{width: '450px'}" [modal]="true">
+    <div class="field">
+        <label for="name">Nome</label>
+        <input id="name" type="text" pInputText [(ngModel)]="pet.name" class="w-full">
+    </div>
+    <div class="field">
+        <label for="gender">Gênero</label>
+        <input id="gender" type="text" pInputText [(ngModel)]="pet.gender" class="w-full">
+    </div>
+    <div class="field">
+        <label for="color">Cor</label>
+        <input id="color" type="text" pInputText [(ngModel)]="pet.color" class="w-full">
+    </div>
+    <div class="field">
+        <label for="breed">Raça</label>
+        <input id="breed" type="text" pInputText [(ngModel)]="pet.breed" class="w-full">
+    </div>
+    <div class="field">
+        <label for="id_tutor">ID do Tutor</label>
+        <input id="id_tutor" type="number" pInputText [(ngModel)]="pet.id_tutor" class="w-full">
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button label="Cancelar" icon="pi pi-times" styleClass="p-button-text" (click)="dialogVisible=false"></p-button>
+        <p-button label="Salvar" icon="pi pi-check" (click)="savePet()"></p-button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>
