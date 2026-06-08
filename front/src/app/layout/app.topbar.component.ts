@@ -1,29 +1,26 @@
-import { Component } from '@angular/core';
-import { LayoutService } from './service/app.layout.service';
-import { Router } from '@angular/router';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { MenuItem } from 'primeng/api';
+import { LayoutService } from "./service/app.layout.service";
 
 @Component({
     selector: 'app-topbar',
-    template: `
-        <div class="layout-topbar">
-            <a class="layout-topbar-logo" routerLink="">
-                <span>AmigoPet</span>
-            </a>
-            <button #menubutton class="p-link layout-menu-button layout-topbar-button" (click)="layoutService.onMenuToggle()">
-                <i class="pi pi-bars"></i>
-            </button>
-            <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
-                <i class="pi pi-ellipsis-v"></i>
-            </button>
-            <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
-                <button class="p-link layout-topbar-button" routerLink="/auth/login">
-                    <i class="pi pi-sign-out"></i>
-                    <span>Sair</span>
-                </button>
-            </div>
-        </div>
-    `
+    templateUrl: './app.topbar.component.html'
 })
 export class AppTopBarComponent {
-    constructor(public layoutService: LayoutService, public router: Router) {}
+
+    items!: MenuItem[];
+
+    @ViewChild('menubutton') menuButton!: ElementRef;
+
+    @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
+
+    @ViewChild('topbarmenu') menu!: ElementRef;
+
+    constructor(public layoutService: LayoutService) { }
+
+    logout(){
+        console.log("saindo")
+        localStorage.removeItem("token")
+        window.location.href = "/"
+    }
 }

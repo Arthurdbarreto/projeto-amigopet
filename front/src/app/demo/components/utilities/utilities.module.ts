@@ -1,10 +1,15 @@
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { IconsComponent } from './icons/icons.component';
+import { UtilitiesRoutingModule } from './utilities-routing.module';
+import { InputTextModule } from 'primeng/inputtext';
 
 @NgModule({
-    imports: [RouterModule.forChild([
-        { path: '**', redirectTo: '/notfound' }
-    ])],
-    exports: [RouterModule]
+    imports: [
+        CommonModule,
+        UtilitiesRoutingModule,
+        InputTextModule
+    ],
+    declarations: [IconsComponent]
 })
-export class UtilitiesModule {}
+export class UtilitiesModule { }

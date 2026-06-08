@@ -20,7 +20,7 @@ interface LayoutState {
 }
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class LayoutService {
 
@@ -29,7 +29,7 @@ export class LayoutService {
         inputStyle: 'outlined',
         menuMode: 'static',
         colorScheme: 'light',
-        theme: 'lara-light-blue',
+        theme: 'lara-light-indigo',
         scale: 14,
     };
 
@@ -43,9 +43,11 @@ export class LayoutService {
     };
 
     private configUpdate = new Subject<AppConfig>();
+
     private overlayOpen = new Subject<any>();
 
     configUpdate$ = this.configUpdate.asObservable();
+
     overlayOpen$ = this.overlayOpen.asObservable();
 
     onMenuToggle() {
@@ -55,10 +57,13 @@ export class LayoutService {
                 this.overlayOpen.next(null);
             }
         }
+
         if (this.isDesktop()) {
             this.state.staticMenuDesktopInactive = !this.state.staticMenuDesktopInactive;
-        } else {
+        }
+        else {
             this.state.staticMenuMobileActive = !this.state.staticMenuMobileActive;
+
             if (this.state.staticMenuMobileActive) {
                 this.overlayOpen.next(null);
             }
@@ -91,4 +96,5 @@ export class LayoutService {
     onConfigUpdate() {
         this.configUpdate.next(this.config);
     }
+
 }

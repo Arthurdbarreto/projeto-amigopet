@@ -1,49 +1,57 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
-import { AuthService } from '../../middleware/auth/auth.service';
+import { Injectable } from '@angular/core';
+import { Pet } from '../models/pet';
+import {environment} from '../../../../environments/environment'
 
-export interface Pet {
-    id?: number;
-    name: string;
-    gender: string;
-    id_tutor: number;
-    color: string;
-    breed: string;
-}
-
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class PetService {
+    constructor(private http: HttpClient) { }
 
-    private apiUrl = environment.apiUrl;
+    headers = new HttpHeaders({
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
+    });
 
-    constructor(private http: HttpClient, private authService: AuthService) {}
+    urlApi = environment.baseUrl+"/pets"
 
-    private getHeaders(): HttpHeaders {
-        const token = this.authService.getToken();
-        return new HttpHeaders({ Authorization: `Bearer ${token}` });
+    getPets() {
+        return this.http.get<any>(this.urlApi, {headers: this.headers})
+            .toPromise()
+            .then(res => {
+                console.log("Pers service", res)
+                return res.pets as Pet[]
+            })
     }
 
-    getPets(): Observable<Pet[]> {
-        return this.http.get<Pet[]>(`${this.apiUrl}/pets`, { headers: this.getHeaders() });
+
+    getPetById(id: number) {
+        return this.http.get<any>(`${this.urlApi}/${id}`, {headers: this.headers})
+            .toPromise()
+            .then(res => {
+                return res.pet as Pet
+            })
     }
 
-    getPet(id: number): Observable<Pet> {
-        return this.http.get<Pet>(`${this.apiUrl}/pets/${id}`, { headers: this.getHeaders() });
+    savePet(pet: Pet) {
+        return this.http.post<any>(this.urlApi, pet, {headers: this.headers})
+            .toPromise()
+            .then(res => {
+                return res.pet as Pet
+            })
+    }   
+
+    deletePet(id: number) {
+        return this.http.delete<any>(`${this.urlApi}/${id}`, {headers: this.headers})
+            .toPromise()
+            .then(res => {
+                return res.success as boolean
+            })
     }
 
-    createPet(pet: Pet): Observable<Pet> {
-        return this.http.post<Pet>(`${this.apiUrl}/pets`, pet, { headers: this.getHeaders() });
-    }
-
-    updatePet(id: number, pet: Pet): Observable<Pet> {
-        return this.http.put<Pet>(`${this.apiUrl}/pets/${id}`, pet, { headers: this.getHeaders() });
-    }
-
-    deletePet(id: number): Observable<any> {
-        return this.http.delete(`${this.apiUrl}/pets/${id}`, { headers: this.getHeaders() });
-    }
+    updatePet(pet: Pet) {
+        return this.http.put<any>(`${this.urlApi}/${pet.id}`, pet, {headers: this.headers})
+            .toPromise()
+            .then(res => {
+                return res.pet as Pet
+            })
+    }   
 }

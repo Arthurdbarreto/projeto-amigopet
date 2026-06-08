@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
+import { LayoutService } from "./service/app.layout.service";
 
 @Component({
     selector: 'app-footer',
-    template: `
-        <div class="layout-footer">
-            <span class="font-medium ml-2">AmigoPet</span>
-        </div>
-    `
+    templateUrl: './app.footer.component.html'
 })
-export class AppFooterComponent {}
+export class AppFooterComponent {
+    constructor(public layoutService: LayoutService) { }
+}

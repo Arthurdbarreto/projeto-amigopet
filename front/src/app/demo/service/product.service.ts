@@ -5,7 +5,7 @@ import { Product } from '../api/product';
 @Injectable()
 export class ProductService {
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
     getProductsSmall() {
         return this.http.get<any>('assets/demo/data/products-small.json')
