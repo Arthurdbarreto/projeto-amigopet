@@ -1,5 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl: '/api/v1',
-  viaCepUrl: 'https://viacep.com.br/ws'
+  apiUrl: 'http://localhost:3000' // Change this to your production API URL when deploying
 };
