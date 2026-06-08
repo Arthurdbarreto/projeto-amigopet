@@ -14,6 +14,7 @@ import { NodeService } from './demo/service/node.service';
 import { PhotoService } from './demo/service/photo.service';
 import { AuthService } from './main/middleware/auth/auth.service';
 import { MessageService } from 'primeng/api';
+import { AuthModule as AuthInterceptorModule } from './main/middleware/interceptors/auth.module';
 
 @NgModule({
     declarations: [
@@ -21,7 +22,8 @@ import { MessageService } from 'primeng/api';
     ],
     imports: [
         AppRoutingModule,
-        AppLayoutModule
+        AppLayoutModule,
+        AuthInterceptorModule
     ],
     providers: [
         { provide: LocationStrategy, useClass: HashLocationStrategy },

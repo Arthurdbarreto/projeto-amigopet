@@ -1,0 +1,116 @@
+<section class="amigopet-page dashboard-page">
+    <div class="page-heading">
+        <div>
+            <span class="eyebrow">Visão geral</span>
+            <h1>Dashboard AmigoPet</h1>
+            <p>Acompanhe a operação do petshop em tempo real.</p>
+        </div>
+        <button pButton icon="pi pi-calendar-plus" label="Novo agendamento" routerLink="/agendamentos"></button>
+    </div>
+
+    <div *ngIf="loading" class="loading-panel">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+
+    <ng-container *ngIf="!loading">
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <span class="metric-icon"><i class="pi pi-heart"></i></span>
+                <small>Total de Pets</small>
+                <strong>{{ data.summary.totalPets }}</strong>
+            </div>
+            <div class="metric-card">
+                <span class="metric-icon"><i class="pi pi-users"></i></span>
+                <small>Total de Tutores</small>
+                <strong>{{ data.summary.totalTutores }}</strong>
+            </div>
+            <div class="metric-card">
+                <span class="metric-icon"><i class="pi pi-briefcase"></i></span>
+                <small>Total de Serviços</small>
+                <strong>{{ data.summary.totalServicos }}</strong>
+            </div>
+            <div class="metric-card">
+                <span class="metric-icon"><i class="pi pi-shopping-bag"></i></span>
+                <small>Total de Produtos</small>
+                <strong>{{ data.summary.totalProdutos }}</strong>
+            </div>
+            <div class="metric-card accent">
+                <span class="metric-icon"><i class="pi pi-clock"></i></span>
+                <small>Agendamentos Hoje</small>
+                <strong>{{ data.summary.agendamentosHoje }}</strong>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <section class="workspace-panel chart-panel">
+                <div class="panel-title">
+                    <h2>Gráfico semanal</h2>
+                    <span>Agendamentos por dia</span>
+                </div>
+                <p-chart type="line" [data]="data.weeklyChart" [options]="chartOptions" height="280px"></p-chart>
+            </section>
+
+            <section class="workspace-panel">
+                <div class="panel-title">
+                    <h2>Produtos com estoque baixo</h2>
+                    <span>Itens com 5 unidades ou menos</span>
+                </div>
+                <div class="compact-list">
+                    <div *ngFor="let produto of data.produtosEstoqueBaixo" class="compact-row">
+                        <div>
+                            <strong>{{ produto.nome }}</strong>
+                            <span>{{ produto.descricao || 'Sem descrição' }}</span>
+                        </div>
+                        <p-tag [value]="produto.estoque + ' un.'" severity="warning"></p-tag>
+                    </div>
+                    <div *ngIf="!data.produtosEstoqueBaixo.length" class="empty-state">Nenhum produto em alerta.</div>
+                </div>
+            </section>
+
+            <section class="workspace-panel">
+                <div class="panel-title">
+                    <h2>Últimos agendamentos</h2>
+                    <span>Atendimentos mais recentes</span>
+                </div>
+                <p-table [value]="data.ultimosAgendamentos" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Pet</th>
+                            <th>Serviço</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-item>
+                        <tr>
+                            <td>{{ nameOf(item.petId) }}</td>
+                            <td>{{ nameOf(item.servicoId) }}</td>
+                            <td>{{ item.dataHora | date:'dd/MM/yyyy HH:mm' }}</td>
+                            <td><p-tag [value]="item.status" [severity]="statusClass(item.status)"></p-tag></td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr><td colspan="4">Nenhum agendamento encontrado.</td></tr>
+                    </ng-template>
+                </p-table>
+            </section>
+
+            <section class="workspace-panel">
+                <div class="panel-title">
+                    <h2>Atividades recentes</h2>
+                    <span>Movimentos importantes</span>
+                </div>
+                <div class="activity-list">
+                    <div *ngFor="let activity of data.atividades" class="activity-item">
+                        <span><i class="pi" [ngClass]="activity.icon"></i></span>
+                        <div>
+                            <strong>{{ activity.title }}</strong>
+                            <small>{{ activity.text }}</small>
+                        </div>
+                    </div>
+                    <div *ngIf="!data.atividades.length" class="empty-state">Sem atividades por enquanto.</div>
+                </div>
+            </section>
+        </div>
+    </ng-container>
+</section>

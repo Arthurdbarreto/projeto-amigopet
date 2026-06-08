@@ -1,62 +1,43 @@
 import { Component } from '@angular/core';
-import { LayoutService } from '../../../../../../src/app/layout/service/app.layout.service';
-import { AuthService } from '../auth.service';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { AuthService } from '../auth.service';
 
 @Component({
     selector: 'app-login',
-    templateUrl: './login.component.html',
-    styles: [`
-        :host ::ng-deep .pi-eye,
-        :host ::ng-deep .pi-eye-slash {
-            transform:scale(1.6);
-            margin-right: 1rem;
-            color: var(--primary-color) !important;
-        }
-    `]
+    templateUrl: './login.component.html'
 })
 export class LoginComponent {
+    loading = false;
 
-    valCheck: string[] = ['remember'];
+    form = this.fb.group({
+        email: ['', [Validators.required, Validators.email]],
+        senha: ['', [Validators.required]]
+    });
 
-    password!: string;
-    username!: string;
-    loading: boolean = false;
-
-    constructor(public layoutService: LayoutService,
+    constructor(
+        private fb: FormBuilder,
         private authService: AuthService,
         private router: Router,
-        private messageService: MessageService) { }
+        private messageService: MessageService
+    ) { }
 
-    async login(): Promise<void> {
-        console.log('Attempting login with', this.username, this.password);
-        try {
-            if (!this.username || !this.password) {
-                this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Preencha todos os campos' });
-                return;
-            }
-
-            this.loading = true;
-            const token = await this.authService.login({ username: this.username, password: this.password });
-
-            if (token) {
-                this.authService.setToken(token);
-                if (this.authService.isAuthenticated()) {
-                    this.router.navigate(['/']);
-                } else {
-                    throw new Error('Falha na autenticação');
-                }
-            }
-        } catch (error) {
-            console.error('Login failed', error);
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Erro no login',
-                detail: 'Credenciais inválidas ou servidor indisponível'
-            });
-        } finally {
-            this.loading = false;
+    login(): void {
+        if (this.form.invalid) {
+            this.form.markAllAsTouched();
+            this.messageService.add({ severity: 'warn', summary: 'Atenção', detail: 'Informe e-mail e senha.' });
+            return;
         }
+
+        this.loading = true;
+        this.authService.login(this.form.getRawValue() as any).subscribe({
+            next: () => this.router.navigate(['/']),
+            error: () => {
+                this.loading = false;
+                this.messageService.add({ severity: 'error', summary: 'Login não realizado', detail: 'Verifique suas credenciais.' });
+            },
+            complete: () => this.loading = false
+        });
     }
 }

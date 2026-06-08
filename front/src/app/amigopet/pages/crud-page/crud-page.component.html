@@ -1,0 +1,118 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<section class="amigopet-page">
+    <div class="page-heading">
+        <div>
+            <span class="eyebrow">Cadastro</span>
+            <h1><i class="pi {{ config.icon }}"></i> {{ config.title }}</h1>
+            <p>{{ config.subtitle }}</p>
+        </div>
+        <button pButton icon="pi pi-plus" label="Novo" (click)="openNew()"></button>
+    </div>
+
+    <section class="workspace-panel">
+        <p-table
+            #dt
+            [value]="items"
+            [loading]="loading"
+            [paginator]="true"
+            [rows]="10"
+            [rowsPerPageOptions]="[10, 20, 50]"
+            [globalFilterFields]="tableFields.map(field => field.name)"
+            responsiveLayout="scroll">
+            <ng-template pTemplate="caption">
+                <div class="table-caption">
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" placeholder="Buscar" (input)="dt.filterGlobal($any($event.target).value, 'contains')" />
+                    </span>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th *ngFor="let field of tableFields" pSortableColumn="{{ field.name }}">
+                        {{ field.label }}
+                        <p-sortIcon field="{{ field.name }}"></p-sortIcon>
+                    </th>
+                    <th class="actions-column">Ações</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td *ngFor="let field of tableFields">{{ displayValue(item, field) }}</td>
+                    <td class="actions-column">
+                        <button pButton pRipple icon="pi pi-pencil" class="p-button-text p-button-rounded" (click)="edit(item)" pTooltip="Editar"></button>
+                        <button pButton pRipple icon="pi pi-trash" class="p-button-text p-button-rounded p-button-danger" (click)="confirmRemove(item)" pTooltip="Remover"></button>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td [attr.colspan]="tableFields.length + 1">Nenhum registro encontrado.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </section>
+</section>
+
+<p-dialog
+    [(visible)]="dialogVisible"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [style]="{ width: 'min(720px, 94vw)' }"
+    [header]="editingItem ? 'Editar ' + config.title : 'Novo registro'">
+    <form [formGroup]="form" class="crud-form">
+        <div class="field" *ngFor="let field of config.fields">
+            <label [for]="field.name">{{ field.label }}</label>
+
+            <input
+                *ngIf="field.type === 'text'"
+                [id]="field.name"
+                pInputText
+                [formControlName]="field.name"
+                [placeholder]="field.label" />
+
+            <p-inputNumber
+                *ngIf="field.type === 'number'"
+                [inputId]="field.name"
+                [formControlName]="field.name"
+                [mode]="field.currency ? 'currency' : 'decimal'"
+                currency="BRL"
+                locale="pt-BR"
+                [min]="0"
+                styleClass="w-full"></p-inputNumber>
+
+            <p-dropdown
+                *ngIf="field.type === 'select'"
+                [inputId]="field.name"
+                [options]="options[field.optionsKey || ''] || []"
+                [formControlName]="field.name"
+                [optionLabel]="field.optionLabel || 'label'"
+                [optionValue]="field.optionValue || 'value'"
+                [placeholder]="'Selecione ' + field.label"
+                styleClass="w-full"></p-dropdown>
+
+            <p-calendar
+                *ngIf="field.type === 'date'"
+                [inputId]="field.name"
+                [formControlName]="field.name"
+                [showTime]="true"
+                hourFormat="24"
+                dateFormat="dd/mm/yy"
+                styleClass="w-full"
+                appendTo="body"></p-calendar>
+
+            <small *ngIf="isInvalid(field)" class="p-error">{{ field.label }} é obrigatório.</small>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <button pButton label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="dialogVisible = false"></button>
+        <button pButton label="Salvar" icon="pi pi-check" (click)="save()" [loading]="saving"></button>
+    </ng-template>
+</p-dialog>
