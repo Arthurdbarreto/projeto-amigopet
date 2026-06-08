@@ -1,0 +1,42 @@
+services:
+  db:
+    image: mongo:latest
+    container_name: amigopet-db
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - mongo-data:/data/db
+
+  api:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    container_name: amigopet-api
+    restart: always
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      PORT: 3000
+      MONGO_URI: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@db:27017/amigopet?authSource=admin
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+    depends_on:
+      - db
+
+  web:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: amigopet-web
+    restart: always
+    ports:
+      - "4200:4200"
+    depends_on:
+      - api
+
+volumes:
+  mongo-data:
