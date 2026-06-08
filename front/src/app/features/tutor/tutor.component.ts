@@ -6,6 +6,7 @@ import { Tutor } from '../../shared/models';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
@@ -16,7 +17,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
   standalone: true,
   imports: [
     CommonModule, TableModule, ButtonModule, InputTextModule, 
-    DialogModule, ConfirmDialogModule, ToastModule, FormsModule, ReactiveFormsModule
+    InputTextareaModule, DialogModule, ConfirmDialogModule, ToastModule, 
+    FormsModule, ReactiveFormsModule
   ],
   providers: [ConfirmationService, MessageService],
   template: `
