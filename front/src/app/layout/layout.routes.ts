@@ -1,4 +1,4 @@
-import { Routes } from '@angular/core';
+import { Routes } from '@angular/router';
 import { AppLayoutComponent } from './app-layout.component';
 
 export const LAYOUT_ROUTES: Routes = [

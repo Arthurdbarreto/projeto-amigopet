@@ -6,10 +6,18 @@ Este documento descreve a estrutura atual do projeto, o fluxo entre frontend, AP
 
 O projeto esta dividido em duas aplicacoes principais:
 
-- `front`: aplicacao Angular 16 baseada no template Sakai/PrimeNG.
-- `back`: API Node.js com Express, SQLite, JWT, bcrypt e Swagger.
+- `front`: aplicacao Angular baseada no template Sakai/PrimeNG.
+- `back`: API Node.js com Express, MongoDB, JWT, bcrypt e Swagger.
 
-O frontend consome a API em `http://localhost:3000`, conforme configurado em `front/src/environments/environment.ts`. A API usa SQLite como banco local e cria as tabelas automaticamente quando o arquivo `back/db/database.js` e carregado.
+O frontend consome a API em `http://localhost:3000`, conforme configurado em `front/src/environments/environment.ts`. A API usa MongoDB e le a conexao a partir de `MONGODB_URI`.
+
+Portas em uso no projeto:
+
+- Frontend: `http://localhost:4200`
+- API: `http://localhost:3000`
+- Swagger: `http://localhost:3000/api-docs`
+
+A porta `4700` nao esta configurada neste repositório; acessar `localhost:4700` nao mostra interface porque nenhum servico escuta nessa porta.
 
 ## Estrutura de pastas
 
@@ -389,10 +397,10 @@ http://localhost:4200
 
 ## Observacoes importantes
 
-- O banco SQLite e local e fica em `back/db/database.db`.
-- As tabelas sao criadas automaticamente por `back/db/database.js`.
+- O banco de dados e MongoDB, e a conexao vem de `MONGODB_URI`.
 - A API usa `cors()`, permitindo chamadas do frontend local.
 - A API espera que `JWT_SECRET` e `JWT_EXPIRES_IN` estejam configurados no ambiente.
+- O frontend documentado para desenvolvimento usa a porta `4200`, nao `4700`.
 - Algumas mensagens no codigo estao com caracteres acentuados quebrados, por exemplo `UsuÃ¡rio`, provavelmente por diferenca de encoding.
 - Em `auth.js`, a rota `/auth/register` chama `findUserByUsername`, mas nao interrompe explicitamente o fluxo antes de chamar `createUser`; se o usuario ja existir, o banco deve bloquear por causa do `UNIQUE`, mas a logica pode ser ajustada futuramente para evitar duas respostas na mesma requisicao.
 - Em `userModel.createUser`, o callback de `db.run` usa arrow function, entao `this?.lastID` provavelmente nao trara o ID inserido do SQLite. Para acessar `lastID`, seria necessario usar `function (err) { ... }`.
