@@ -17,45 +17,70 @@ import { ConfirmationService, MessageService } from 'primeng/api';
   selector: 'app-pet',
   standalone: true,
   imports: [
-    CommonModule, TableModule, ButtonModule, InputTextModule, 
-    DialogModule, ConfirmDialogModule, ToastModule, FormsModule, 
+    CommonModule, TableModule, ButtonModule, InputTextModule,
+    DialogModule, ConfirmDialogModule, ToastModule, FormsModule,
     ReactiveFormsModule, DropdownModule
   ],
   providers: [ConfirmationService, MessageService],
   template: `
-    <div class="card">
-      <div class="flex justify-content-between align-items-center mb-4">
-        <h1 class="text-2xl font-bold m-0">Gerenciamento de Pets</h1>
-        <button pButton label="Novo Pet" icon="pi pi-plus" (click)="openNew()"></button>
-      </div>
+    <div class="amigopet-page">
+      <section class="module-hero module-hero--pet">
+        <div class="module-hero__copy">
+          <span class="module-eyebrow"><i class="pi pi-heart"></i> Pets</span>
+          <h1>Gerenciamento de Pets</h1>
+          <p>Cadastre e acompanhe os animais atendidos com informacoes essenciais sempre a mao.</p>
+        </div>
+        <img src="assets/images/pet-img.jpeg" alt="Pets AmigoPet" />
+      </section>
 
-      <p-table [value]="pets()" [rows]="10" [paginator]="true" [loading]="loading()" responsiveLayout="scroll">
-        <ng-template pTemplate="header">
-          <tr>
-            <th>Nome</th>
-            <th>Espécie</th>
-            <th>Raça</th>
-            <th>Sexo</th>
-            <th>Tutor</th>
-            <th style="width: 10rem">Ações</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-pet>
-          <tr>
-            <td>{{ pet.name }}</td>
-            <td>{{ pet.species }}</td>
-            <td>{{ pet.breed }}</td>
-            <td>{{ pet.sex }}</td>
-            <td>{{ pet.tutorId?.name }}</td>
-            <td>
-              <div class="flex gap-2">
-                <button pButton icon="pi pi-pencil" class="p-button-text" (click)="editPet(pet)"></button>
-                <button pButton icon="pi pi-trash" class="p-button-text p-button-danger" (click)="deletePet(pet)"></button>
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
+      <div class="amigopet-card">
+        <div class="module-toolbar">
+          <div>
+            <span class="module-eyebrow"><i class="pi pi-list"></i> Lista de pets</span>
+            <h2>Pets cadastrados</h2>
+          </div>
+          <button pButton label="Novo Pet" icon="pi pi-plus" (click)="openNew()"></button>
+        </div>
+
+        <p-table [value]="pets()" [rows]="10" [paginator]="true" [loading]="loading()" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Nome</th>
+              <th>Especie</th>
+              <th>Raca</th>
+              <th>Sexo</th>
+              <th>Tutor</th>
+              <th style="width: 10rem">Acoes</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-pet>
+            <tr>
+              <td><i class="pi pi-heart table-icon"></i>{{ pet.name }}</td>
+              <td>{{ pet.species }}</td>
+              <td>{{ pet.breed }}</td>
+              <td>{{ pet.sex }}</td>
+              <td><i class="pi pi-user table-icon"></i>{{ pet.tutorId?.name }}</td>
+              <td>
+                <div class="flex gap-2">
+                  <button pButton icon="pi pi-pencil" class="p-button-text" (click)="editPet(pet)"></button>
+                  <button pButton icon="pi pi-trash" class="p-button-text p-button-danger" (click)="deletePet(pet)"></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="6">
+                <div class="empty-state">
+                  <i class="pi pi-heart"></i>
+                  <strong>Nenhum pet cadastrado ainda</strong>
+                  <span>Use o botao Novo Pet para iniciar o cadastro.</span>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
 
       <p-dialog [(visible)]="petDialog" [style]="{width: '450px'}" [header]="pet.id ? 'Editar Pet' : 'Novo Pet'" [modal]="true" styleClass="p-fluid">
         <ng-template pTemplate="content">
@@ -65,11 +90,11 @@ import { ConfirmationService, MessageService } from 'primeng/api';
               <input type="text" pInputText id="name" formControlName="name" required />
             </div>
             <div class="field mb-3">
-              <label for="species">Espécie</label>
+              <label for="species">Especie</label>
               <input type="text" pInputText id="species" formControlName="species" required />
             </div>
             <div class="field mb-3">
-              <label for="breed">Raça</label>
+              <label for="breed">Raca</label>
               <input type="text" pInputText id="breed" formControlName="breed" />
             </div>
             <div class="field mb-3">
@@ -106,10 +131,10 @@ export class PetComponent implements OnInit {
   loading = signal(false);
   petDialog = false;
   pet: Partial<Pet> = {};
-  
+
   sexOptions = [
     { label: 'Macho', value: 'Macho' },
-    { label: 'Fêmea', value: 'Fêmea' }
+    { label: 'F\u00eamea', value: 'F\u00eamea' }
   ];
 
   petForm = this.fb.group({
@@ -160,12 +185,12 @@ export class PetComponent implements OnInit {
   deletePet(pet: Pet) {
     this.confirmationService.confirm({
       message: `Tem certeza que deseja excluir ${pet.name}?`,
-      header: 'Confirmar Exclusão',
+      header: 'Confirmar Exclusao',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.petService.delete(pet.id!).subscribe({
           next: () => {
-            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Pet excluído' });
+            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Pet excluido' });
             this.loadPets();
           }
         });

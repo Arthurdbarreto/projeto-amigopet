@@ -16,43 +16,68 @@ import { ConfirmationService, MessageService } from 'primeng/api';
   selector: 'app-tutor',
   standalone: true,
   imports: [
-    CommonModule, TableModule, ButtonModule, InputTextModule, 
-    InputTextarea, DialogModule, ConfirmDialogModule, ToastModule, 
+    CommonModule, TableModule, ButtonModule, InputTextModule,
+    InputTextarea, DialogModule, ConfirmDialogModule, ToastModule,
     FormsModule, ReactiveFormsModule
   ],
   providers: [ConfirmationService, MessageService],
   template: `
-    <div class="card">
-      <div class="flex justify-content-between align-items-center mb-4">
-        <h1 class="text-2xl font-bold m-0">Gerenciamento de Tutores</h1>
-        <button pButton label="Novo Tutor" icon="pi pi-plus" (click)="openNew()"></button>
-      </div>
+    <div class="amigopet-page">
+      <section class="module-hero module-hero--tutor">
+        <div class="module-hero__copy">
+          <span class="module-eyebrow"><i class="pi pi-users"></i> Tutores</span>
+          <h1>Gerenciamento de Tutores</h1>
+          <p>Organize os responsaveis, contatos e enderecos usados nos atendimentos.</p>
+        </div>
+        <img src="assets/images/tutor-img.jpeg" alt="Tutores AmigoPet" />
+      </section>
 
-      <p-table [value]="tutors()" [rows]="10" [paginator]="true" [loading]="loading()" responsiveLayout="scroll">
-        <ng-template pTemplate="header">
-          <tr>
-            <th>Nome</th>
-            <th>Telefone</th>
-            <th>Contato</th>
-            <th>Endereço</th>
-            <th style="width: 10rem">Ações</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-tutor>
-          <tr>
-            <td>{{ tutor.name }}</td>
-            <td>{{ tutor.phone }}</td>
-            <td>{{ tutor.contact }}</td>
-            <td>{{ tutor.address }}</td>
-            <td>
-              <div class="flex gap-2">
-                <button pButton icon="pi pi-pencil" class="p-button-text" (click)="editTutor(tutor)"></button>
-                <button pButton icon="pi pi-trash" class="p-button-text p-button-danger" (click)="deleteTutor(tutor)"></button>
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
+      <div class="amigopet-card">
+        <div class="module-toolbar">
+          <div>
+            <span class="module-eyebrow"><i class="pi pi-id-card"></i> Clientes e responsaveis</span>
+            <h2>Tutores cadastrados</h2>
+          </div>
+          <button pButton label="Novo Tutor" icon="pi pi-plus" (click)="openNew()"></button>
+        </div>
+
+        <p-table [value]="tutors()" [rows]="10" [paginator]="true" [loading]="loading()" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Nome</th>
+              <th>Telefone</th>
+              <th>Contato</th>
+              <th>Endereco</th>
+              <th style="width: 10rem">Acoes</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-tutor>
+            <tr>
+              <td><i class="pi pi-user table-icon"></i>{{ tutor.name }}</td>
+              <td><i class="pi pi-phone table-icon"></i>{{ tutor.phone }}</td>
+              <td><i class="pi pi-envelope table-icon"></i>{{ tutor.contact }}</td>
+              <td><i class="pi pi-map-marker table-icon"></i>{{ tutor.address }}</td>
+              <td>
+                <div class="flex gap-2">
+                  <button pButton icon="pi pi-pencil" class="p-button-text" (click)="editTutor(tutor)"></button>
+                  <button pButton icon="pi pi-trash" class="p-button-text p-button-danger" (click)="deleteTutor(tutor)"></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="5">
+                <div class="empty-state">
+                  <i class="pi pi-users"></i>
+                  <strong>Nenhum tutor cadastrado ainda</strong>
+                  <span>Adicione o primeiro responsavel para vincular pets e agendamentos.</span>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
 
       <p-dialog [(visible)]="tutorDialog" [style]="{width: '450px'}" [header]="tutor.id ? 'Editar Tutor' : 'Novo Tutor'" [modal]="true" styleClass="p-fluid">
         <ng-template pTemplate="content">
@@ -70,7 +95,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
               <input type="text" pInputText id="contact" formControlName="contact" />
             </div>
             <div class="field mb-3">
-              <label for="address">Endereço</label>
+              <label for="address">Endereco</label>
               <textarea pInputTextarea id="address" formControlName="address" rows="3"></textarea>
             </div>
           </form>
@@ -134,12 +159,12 @@ export class TutorComponent implements OnInit {
   deleteTutor(tutor: Tutor) {
     this.confirmationService.confirm({
       message: `Tem certeza que deseja excluir ${tutor.name}?`,
-      header: 'Confirmar Exclusão',
+      header: 'Confirmar Exclusao',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.tutorService.delete(tutor.id!).subscribe({
           next: () => {
-            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Tutor excluído' });
+            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Tutor excluido' });
             this.loadTutors();
           },
           error: (err) => {

@@ -10,78 +10,116 @@ import { TagModule } from 'primeng/tag';
   standalone: true,
   imports: [CommonModule, CardModule, TableModule, TagModule],
   template: `
-    <div class="grid">
-      <!-- Cards -->
-      <div class="col-12 md:col-6 lg:col-2" *ngFor="let card of statCards">
-        <p-card styleClass="shadow-1 border-round h-full">
-          <div class="flex justify-content-between mb-3">
-            <div>
-              <span class="block text-500 font-medium mb-3">{{ card.label }}</span>
-              <div class="text-900 font-bold text-xl">{{ statsSignal()?.cards?.[card.key] || 0 }}</div>
-            </div>
-            <div class="flex align-items-center justify-content-center border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem', backgroundColor: card.bg, color: card.color}">
-              <i [class]="card.icon" class="text-xl"></i>
-            </div>
+    <div class="amigopet-page">
+      <section class="dashboard-hero">
+        <img src="assets/images/dashboard-img.jpeg" alt="Painel AmigoPet" />
+        <div class="dashboard-hero__content">
+          <span class="module-eyebrow"><i class="pi pi-home"></i> Visao geral</span>
+          <h1>Bem-vindo ao AmigoPet</h1>
+          <p>Acompanhe pets, tutores, produtos, servicos e agendamentos com uma leitura rapida do dia.</p>
+        </div>
+      </section>
+
+      <section class="welcome-band">
+        <div>
+          <span class="module-eyebrow"><i class="pi pi-sparkles"></i> Operacao do dia</span>
+          <h2>Resumo da sua clinica</h2>
+        </div>
+        <p>Os indicadores abaixo ajudam a identificar a movimentacao principal e os pontos que pedem atencao.</p>
+      </section>
+
+      <div class="stats-grid">
+        <article class="stat-card" *ngFor="let card of statCards">
+          <div class="stat-icon" [ngStyle]="{backgroundColor: card.bg, color: card.color}">
+            <i [class]="card.icon"></i>
           </div>
-        </p-card>
-      </div>
-      <div class="col-12 md:col-6 lg:col-4">
-        <p-card styleClass="shadow-1 border-round h-full">
-          <div class="flex justify-content-between mb-3">
-            <div>
-              <span class="block text-500 font-medium mb-3">Agendamentos Hoje</span>
-              <div class="text-900 font-bold text-xl">{{ statsSignal()?.cards?.appointmentsToday || 0 }}</div>
-            </div>
-            <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width: 2.5rem; height: 2.5rem">
-              <i class="pi pi-calendar text-blue-500 text-xl"></i>
-            </div>
+          <div>
+            <span>{{ card.label }}</span>
+            <strong>{{ statsSignal()?.cards?.[card.key] || 0 }}</strong>
           </div>
-        </p-card>
+        </article>
+
+        <article class="stat-card stat-card--wide">
+          <div class="stat-icon" style="background-color: #DBEAFE; color: #2563EB">
+            <i class="pi pi-calendar-clock"></i>
+          </div>
+          <div>
+            <span>Agendamentos Hoje</span>
+            <strong>{{ statsSignal()?.cards?.appointmentsToday || 0 }}</strong>
+          </div>
+        </article>
       </div>
 
-      <!-- Widgets -->
-      <div class="col-12 lg:col-6">
-        <p-card header="Últimos Agendamentos" styleClass="shadow-1 border-round">
-          <p-table [value]="statsSignal()?.widgets?.latestAppointments || []" [rows]="5" responsiveLayout="scroll">
+      <div class="grid mt-4">
+        <div class="col-12 lg:col-6">
+          <p-card styleClass="amigopet-card h-full">
             <ng-template pTemplate="header">
-              <tr>
-                <th>Pet</th>
-                <th>Serviço</th>
-                <th>Status</th>
-              </tr>
+              <div class="card-heading"><i class="pi pi-calendar"></i><span>Ultimos Agendamentos</span></div>
             </ng-template>
-            <ng-template pTemplate="body" let-item>
-              <tr>
-                <td>{{ item.petId?.name }}</td>
-                <td>{{ item.serviceId?.name }}</td>
-                <td>
-                  <p-tag [value]="item.status" [severity]="getStatusSeverity(item.status)"></p-tag>
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
-        </p-card>
-      </div>
+            <p-table [value]="statsSignal()?.widgets?.latestAppointments || []" [rows]="5" responsiveLayout="scroll">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Pet</th>
+                  <th>Servico</th>
+                  <th>Status</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr>
+                  <td>{{ item.petId?.name }}</td>
+                  <td>{{ item.serviceId?.name }}</td>
+                  <td>
+                    <p-tag [value]="item.status" [severity]="getStatusSeverity(item.status)"></p-tag>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="3">
+                    <div class="empty-state empty-state--compact">
+                      <i class="pi pi-calendar-plus"></i>
+                      <span>Nenhum agendamento recente.</span>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-card>
+        </div>
 
-      <div class="col-12 lg:col-6">
-        <p-card header="Estoque Baixo" styleClass="shadow-1 border-round">
-          <p-table [value]="statsSignal()?.widgets?.lowStockProducts || []" [rows]="5" responsiveLayout="scroll">
+        <div class="col-12 lg:col-6">
+          <p-card styleClass="amigopet-card h-full">
             <ng-template pTemplate="header">
-              <tr>
-                <th>Produto</th>
-                <th>Estoque</th>
-                <th>Preço</th>
-              </tr>
+              <div class="card-heading"><i class="pi pi-box"></i><span>Estoque Baixo</span></div>
             </ng-template>
-            <ng-template pTemplate="body" let-product>
-              <tr>
-                <td>{{ product.name }}</td>
-                <td class="text-red-500 font-bold">{{ product.stock }}</td>
-                <td>{{ product.price | currency:'BRL' }}</td>
-              </tr>
-            </ng-template>
-          </p-table>
-        </p-card>
+            <p-table [value]="statsSignal()?.widgets?.lowStockProducts || []" [rows]="5" responsiveLayout="scroll">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Produto</th>
+                  <th>Estoque</th>
+                  <th>Preco</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-product>
+                <tr>
+                  <td>{{ product.name }}</td>
+                  <td class="text-red-500 font-bold">{{ product.stock }}</td>
+                  <td>{{ product.price | currency:'BRL' }}</td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="3">
+                    <div class="empty-state empty-state--compact">
+                      <i class="pi pi-check-circle"></i>
+                      <span>Nenhum produto com estoque baixo.</span>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-card>
+        </div>
       </div>
     </div>
   `
@@ -91,9 +129,9 @@ export class DashboardComponent implements OnInit {
   statsSignal = signal<any>(null);
 
   statCards = [
-    { label: 'Total Pets', key: 'totalPets', icon: 'pi pi-heart', bg: '#E0E7FF', color: '#4338CA' },
+    { label: 'Pets', key: 'totalPets', icon: 'pi pi-heart', bg: '#E0F2FE', color: '#0369A1' },
     { label: 'Tutores', key: 'totalTutors', icon: 'pi pi-users', bg: '#FCE7F3', color: '#BE185D' },
-    { label: 'Serviços', key: 'totalServices', icon: 'pi pi-briefcase', bg: '#FEF3C7', color: '#B45309' },
+    { label: 'Servicos', key: 'totalServices', icon: 'pi pi-briefcase', bg: '#FEF3C7', color: '#B45309' },
     { label: 'Produtos', key: 'totalProducts', icon: 'pi pi-shopping-bag', bg: '#D1FAE5', color: '#047857' }
   ];
 

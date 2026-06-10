@@ -20,47 +20,72 @@ import { ConfirmationService, MessageService } from 'primeng/api';
   selector: 'app-appointment',
   standalone: true,
   imports: [
-    CommonModule, TableModule, ButtonModule, InputTextModule, 
-    DialogModule, ConfirmDialogModule, ToastModule, FormsModule, 
+    CommonModule, TableModule, ButtonModule, InputTextModule,
+    DialogModule, ConfirmDialogModule, ToastModule, FormsModule,
     ReactiveFormsModule, DropdownModule, CalendarModule, TagModule
   ],
   providers: [ConfirmationService, MessageService],
   template: `
-    <div class="card">
-      <div class="flex justify-content-between align-items-center mb-4">
-        <h1 class="text-2xl font-bold m-0">Gerenciamento de Agendamentos</h1>
-        <button pButton label="Novo Agendamento" icon="pi pi-plus" (click)="openNew()"></button>
-      </div>
+    <div class="amigopet-page">
+      <section class="module-hero module-hero--appointment">
+        <div class="module-hero__copy">
+          <span class="module-eyebrow"><i class="pi pi-calendar"></i> Agendamentos</span>
+          <h1>Gerenciamento de Agendamentos</h1>
+          <p>Visualize datas, horarios, pets, servicos e status em uma agenda mais organizada.</p>
+        </div>
+        <img src="assets/images/agendamento-img.jpeg" alt="Agendamentos AmigoPet" />
+      </section>
 
-      <p-table [value]="appointments()" [rows]="10" [paginator]="true" [loading]="loading()" responsiveLayout="scroll">
-        <ng-template pTemplate="header">
-          <tr>
-            <th>Pet</th>
-            <th>Tutor</th>
-            <th>Serviço</th>
-            <th>Data/Hora</th>
-            <th>Status</th>
-            <th style="width: 10rem">Ações</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-app>
-          <tr>
-            <td>{{ app.petId?.name }}</td>
-            <td>{{ app.tutorId?.name }}</td>
-            <td>{{ app.serviceId?.name }}</td>
-            <td>{{ app.dataHora | date:'dd/MM/yyyy HH:mm' }}</td>
-            <td>
-              <p-tag [value]="app.status" [severity]="getStatusSeverity(app.status)"></p-tag>
-            </td>
-            <td>
-              <div class="flex gap-2">
-                <button pButton icon="pi pi-pencil" class="p-button-text" (click)="editAppointment(app)"></button>
-                <button pButton icon="pi pi-trash" class="p-button-text p-button-danger" (click)="deleteAppointment(app)"></button>
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
+      <div class="amigopet-card">
+        <div class="module-toolbar">
+          <div>
+            <span class="module-eyebrow"><i class="pi pi-clock"></i> Calendario e agenda</span>
+            <h2>Agendamentos cadastrados</h2>
+          </div>
+          <button pButton label="Novo Agendamento" icon="pi pi-plus" (click)="openNew()"></button>
+        </div>
+
+        <p-table [value]="appointments()" [rows]="10" [paginator]="true" [loading]="loading()" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Pet</th>
+              <th>Tutor</th>
+              <th>Servico</th>
+              <th>Data/Hora</th>
+              <th>Status</th>
+              <th style="width: 10rem">Acoes</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-app>
+            <tr>
+              <td><i class="pi pi-heart table-icon"></i>{{ app.petId?.name }}</td>
+              <td><i class="pi pi-user table-icon"></i>{{ app.tutorId?.name }}</td>
+              <td><i class="pi pi-briefcase table-icon"></i>{{ app.serviceId?.name }}</td>
+              <td><i class="pi pi-clock table-icon"></i>{{ app.dataHora | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>
+                <p-tag [value]="app.status" [severity]="getStatusSeverity(app.status)"></p-tag>
+              </td>
+              <td>
+                <div class="flex gap-2">
+                  <button pButton icon="pi pi-pencil" class="p-button-text" (click)="editAppointment(app)"></button>
+                  <button pButton icon="pi pi-trash" class="p-button-text p-button-danger" (click)="deleteAppointment(app)"></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="6">
+                <div class="empty-state">
+                  <i class="pi pi-calendar-plus"></i>
+                  <strong>Nenhum agendamento cadastrado ainda</strong>
+                  <span>Crie o primeiro horario para organizar a agenda.</span>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
 
       <p-dialog [(visible)]="appointmentDialog" [style]="{width: '450px'}" [header]="appointment.id ? 'Editar Agendamento' : 'Novo Agendamento'" [modal]="true" styleClass="p-fluid">
         <ng-template pTemplate="content">
@@ -70,8 +95,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
               <p-dropdown id="petId" [options]="pets()" optionLabel="name" optionValue="id" formControlName="petId" [filter]="true" placeholder="Selecione o Pet"></p-dropdown>
             </div>
             <div class="field mb-3">
-              <label for="serviceId">Serviço</label>
-              <p-dropdown id="serviceId" [options]="services()" optionLabel="name" optionValue="id" formControlName="serviceId" [filter]="true" placeholder="Selecione o Serviço"></p-dropdown>
+              <label for="serviceId">Servico</label>
+              <p-dropdown id="serviceId" [options]="services()" optionLabel="name" optionValue="id" formControlName="serviceId" [filter]="true" placeholder="Selecione o Servico"></p-dropdown>
             </div>
             <div class="field mb-3">
               <label for="dataHora">Data e Hora</label>
@@ -109,7 +134,7 @@ export class AppointmentComponent implements OnInit {
   loading = signal(false);
   appointmentDialog = false;
   appointment: Partial<Appointment> = {};
-  
+
   statusOptions = [
     { label: 'Pendente', value: 'Pendente' },
     { label: 'Confirmado', value: 'Confirmado' },
@@ -179,12 +204,12 @@ export class AppointmentComponent implements OnInit {
   deleteAppointment(app: Appointment) {
     this.confirmationService.confirm({
       message: `Deseja excluir este agendamento?`,
-      header: 'Confirmar Exclusão',
+      header: 'Confirmar Exclusao',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.appointmentService.delete(app.id!).subscribe({
           next: () => {
-            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Agendamento excluído' });
+            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Agendamento excluido' });
             this.loadAppointments();
           }
         });

@@ -13,46 +13,64 @@ import { MessageModule } from 'primeng/message';
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule, 
-    ReactiveFormsModule, 
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     RouterModule,
-    InputTextModule, 
-    PasswordModule, 
-    ButtonModule, 
+    InputTextModule,
+    PasswordModule,
+    ButtonModule,
     CardModule,
     MessageModule
   ],
   template: `
-    <div class="flex align-items-center justify-content-center min-h-screen bg-surface-ground px-4">
-      <p-card class="w-full" styleClass="shadow-2" [style]="{'max-width': '400px'}">
-        <div class="text-center mb-5">
-          <div class="text-primary text-3xl font-bold mb-3">AmigoPet</div>
-          <span class="text-600 font-medium">Bem-vindo! Faça login para continuar.</span>
+    <div class="login-page">
+      <section class="login-shell">
+        <div class="login-visual">
+          <img src="assets/images/login-img.jpeg" alt="AmigoPet login" />
+          <div class="login-visual__overlay">
+            <span class="login-kicker">Cuidado, agenda e gestao</span>
+            <h1>AmigoPet</h1>
+            <p>Tudo pronto para acompanhar pets, tutores e atendimentos em um so lugar.</p>
+          </div>
         </div>
 
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-column gap-3">
-          <div class="flex flex-column gap-2">
-            <label for="email" class="font-medium">E-mail</label>
-            <input pInputText id="email" formControlName="email" type="email" placeholder="seu@email.com" class="w-full" />
-            <p-message *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" severity="error" text="E-mail inválido"></p-message>
+        <div class="login-panel">
+          <div class="text-center mb-5">
+            <div class="brand-mark mx-auto mb-3"><i class="pi pi-heart"></i></div>
+            <div class="text-primary text-3xl font-bold mb-3">AmigoPet</div>
+            <span class="text-600 font-medium">Bem-vindo! Faca login para continuar.</span>
           </div>
 
-          <div class="flex flex-column gap-2">
-            <label for="password" class="font-medium">Senha</label>
-            <p-password id="password" formControlName="password" [toggleMask]="true" [feedback]="false" styleClass="w-full" inputStyleClass="w-full" placeholder="Sua senha"></p-password>
-          </div>
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-column gap-3">
+            <div class="flex flex-column gap-2">
+              <label for="email" class="font-medium">E-mail</label>
+              <span class="p-input-icon-left w-full">
+                <i class="pi pi-user"></i>
+                <input pInputText id="email" formControlName="email" type="email" placeholder="seu@email.com" class="w-full" />
+              </span>
+              <p-message *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" severity="error" text="E-mail invalido"></p-message>
+            </div>
 
-          <p-message *ngIf="error" severity="error" [text]="error"></p-message>
+            <div class="flex flex-column gap-2">
+              <label for="password" class="font-medium">Senha</label>
+              <span class="p-input-icon-left w-full login-password">
+                <i class="pi pi-lock"></i>
+                <p-password id="password" formControlName="password" [toggleMask]="true" [feedback]="false" styleClass="w-full" inputStyleClass="w-full" placeholder="Sua senha"></p-password>
+              </span>
+            </div>
 
-          <button pButton label="Entrar" type="submit" [loading]="loading" [disabled]="loginForm.invalid" class="w-full mt-2"></button>
+            <p-message *ngIf="error" severity="error" [text]="error"></p-message>
 
-          <div class="text-center mt-3">
-            <span class="text-600">Não tem uma conta? </span>
-            <a routerLink="/auth/register" class="text-primary font-bold no-underline hover:underline">Cadastre-se</a>
-          </div>
-        </form>
-      </p-card>
+            <button pButton label="Entrar" type="submit" [loading]="loading" [disabled]="loginForm.invalid" class="w-full mt-2"></button>
+
+            <div class="text-center mt-3">
+              <span class="text-600">Nao tem uma conta? </span>
+              <a routerLink="/auth/register" class="text-primary font-bold no-underline hover:underline">Cadastre-se</a>
+            </div>
+          </form>
+        </div>
+      </section>
     </div>
   `
 })

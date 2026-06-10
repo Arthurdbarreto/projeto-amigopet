@@ -6,6 +6,7 @@ import { Service } from '../../shared/models';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { InputTextarea } from 'primeng/inputtextarea';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -16,43 +17,58 @@ import { ConfirmationService, MessageService } from 'primeng/api';
   selector: 'app-service',
   standalone: true,
   imports: [
-    CommonModule, TableModule, ButtonModule, InputTextModule, 
-    InputNumberModule, DialogModule, ConfirmDialogModule, ToastModule, 
-    FormsModule, ReactiveFormsModule
+    CommonModule, TableModule, ButtonModule, InputTextModule,
+    InputTextarea, InputNumberModule, DialogModule, ConfirmDialogModule,
+    ToastModule, FormsModule, ReactiveFormsModule
   ],
   providers: [ConfirmationService, MessageService],
   template: `
-    <div class="card">
-      <div class="flex justify-content-between align-items-center mb-4">
-        <h1 class="text-2xl font-bold m-0">Gerenciamento de Serviços</h1>
-        <button pButton label="Novo Serviço" icon="pi pi-plus" (click)="openNew()"></button>
+    <div class="amigopet-page">
+      <section class="module-hero module-hero--service">
+        <div class="module-hero__copy">
+          <span class="module-eyebrow"><i class="pi pi-briefcase"></i> Servicos</span>
+          <h1>Gerenciamento de Servicos</h1>
+          <p>Organize atendimentos, banho, tosa e demais cuidados oferecidos aos pets.</p>
+        </div>
+        <img src="assets/images/servicos-img.jpeg" alt="Servicos AmigoPet" />
+      </section>
+
+      <div class="amigopet-card">
+        <div class="module-toolbar">
+          <div>
+            <span class="module-eyebrow"><i class="pi pi-sparkles"></i> Atendimento, banho e tosa</span>
+            <h2>Servicos cadastrados</h2>
+          </div>
+          <button pButton label="Novo Servico" icon="pi pi-plus" (click)="openNew()"></button>
+        </div>
+
+        <div class="service-card-grid" *ngIf="services().length; else emptyServices">
+          <article class="service-card" *ngFor="let service of services()">
+            <div class="service-card__icon">
+              <i [class]="getServiceIcon(service.name)"></i>
+            </div>
+            <div class="service-card__body">
+              <h3>{{ service.name }}</h3>
+              <p>{{ service.description || 'Servico disponivel para agendamento.' }}</p>
+              <strong>{{ service.price | currency:'BRL' }}</strong>
+            </div>
+            <div class="service-card__actions">
+              <button pButton icon="pi pi-pencil" class="p-button-text" (click)="editService(service)"></button>
+              <button pButton icon="pi pi-trash" class="p-button-text p-button-danger" (click)="deleteService(service)"></button>
+            </div>
+          </article>
+        </div>
+
+        <ng-template #emptyServices>
+          <div class="empty-state">
+            <i class="pi pi-briefcase"></i>
+            <strong>Nenhum servico cadastrado ainda</strong>
+            <span>Adicione servicos para montar sua agenda de atendimento.</span>
+          </div>
+        </ng-template>
       </div>
 
-      <p-table [value]="services()" [rows]="10" [paginator]="true" [loading]="loading()" responsiveLayout="scroll">
-        <ng-template pTemplate="header">
-          <tr>
-            <th>Nome</th>
-            <th>Descrição</th>
-            <th>Preço</th>
-            <th style="width: 10rem">Ações</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-service>
-          <tr>
-            <td>{{ service.name }}</td>
-            <td>{{ service.description }}</td>
-            <td>{{ service.price | currency:'BRL' }}</td>
-            <td>
-              <div class="flex gap-2">
-                <button pButton icon="pi pi-pencil" class="p-button-text" (click)="editService(service)"></button>
-                <button pButton icon="pi pi-trash" class="p-button-text p-button-danger" (click)="deleteService(service)"></button>
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-
-      <p-dialog [(visible)]="serviceDialog" [style]="{width: '450px'}" [header]="service.id ? 'Editar Serviço' : 'Novo Serviço'" [modal]="true" styleClass="p-fluid">
+      <p-dialog [(visible)]="serviceDialog" [style]="{width: '450px'}" [header]="service.id ? 'Editar Servico' : 'Novo Servico'" [modal]="true" styleClass="p-fluid">
         <ng-template pTemplate="content">
           <form [formGroup]="serviceForm">
             <div class="field mb-3">
@@ -60,11 +76,11 @@ import { ConfirmationService, MessageService } from 'primeng/api';
               <input type="text" pInputText id="name" formControlName="name" required />
             </div>
             <div class="field mb-3">
-              <label for="description">Descrição</label>
+              <label for="description">Descricao</label>
               <textarea pInputTextarea id="description" formControlName="description" rows="3"></textarea>
             </div>
             <div class="field mb-3">
-              <label for="price">Preço</label>
+              <label for="price">Preco</label>
               <p-inputNumber id="price" formControlName="price" mode="currency" currency="BRL" locale="pt-BR"></p-inputNumber>
             </div>
           </form>
@@ -91,7 +107,7 @@ export class ServiceComponent implements OnInit {
   loading = signal(false);
   serviceDialog = false;
   service: Partial<Service> = {};
-  
+
   serviceForm = this.fb.group({
     name: ['', Validators.required],
     description: [''],
@@ -113,6 +129,13 @@ export class ServiceComponent implements OnInit {
     });
   }
 
+  getServiceIcon(name = '') {
+    const normalizedName = name.toLowerCase();
+    if (normalizedName.includes('banho')) return 'pi pi-sparkles';
+    if (normalizedName.includes('tosa')) return 'pi pi-scissors';
+    return 'pi pi-briefcase';
+  }
+
   openNew() {
     this.service = {};
     this.serviceForm.reset({ price: 0 });
@@ -128,12 +151,12 @@ export class ServiceComponent implements OnInit {
   deleteService(service: Service) {
     this.confirmationService.confirm({
       message: `Tem certeza que deseja excluir ${service.name}?`,
-      header: 'Confirmar Exclusão',
+      header: 'Confirmar Exclusao',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.serviceService.delete(service.id!).subscribe({
           next: () => {
-            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Serviço excluído' });
+            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Servico excluido' });
             this.loadServices();
           }
         });
@@ -150,7 +173,7 @@ export class ServiceComponent implements OnInit {
     if (this.service.id) {
       this.serviceService.update(this.service.id, data).subscribe({
         next: () => {
-          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Serviço atualizado' });
+          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Servico atualizado' });
           this.loadServices();
           this.hideDialog();
         }
@@ -158,7 +181,7 @@ export class ServiceComponent implements OnInit {
     } else {
       this.serviceService.create(data).subscribe({
         next: () => {
-          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Serviço criado' });
+          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Servico criado' });
           this.loadServices();
           this.hideDialog();
         }
