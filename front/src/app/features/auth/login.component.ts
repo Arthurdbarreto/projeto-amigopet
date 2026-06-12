@@ -27,26 +27,28 @@ import { MessageModule } from 'primeng/message';
     <div class="login-page">
       <section class="login-shell">
         <div class="login-visual">
-          <img src="assets/images/login-img.jpeg" alt="AmigoPet login" />
-          <div class="login-visual__overlay">
-            <span class="login-kicker">Cuidado, agenda e gestao</span>
-            <h1>AmigoPet</h1>
-            <p>Tudo pronto para acompanhar pets, tutores e atendimentos em um so lugar.</p>
+          <div class="brand-hero">
+            <div class="brand-paw"><i class="pi pi-heart-fill"></i></div>
+            <h1>Amigo<span>Pet</span></h1>
+            <p>Cuidado e carinho para<br />seu melhor amigo</p>
           </div>
+          <img src="assets/images/login-img.jpeg" alt="Clinica veterinaria AmigoPet" />
+          <span class="decor-paw decor-paw--one">●●</span>
+          <span class="decor-paw decor-paw--two">●●</span>
+          <span class="decor-paw decor-paw--three">●●</span>
         </div>
 
         <div class="login-panel">
-          <div class="text-center mb-5">
-            <div class="brand-mark mx-auto mb-3"><i class="pi pi-heart"></i></div>
-            <div class="text-primary text-3xl font-bold mb-3">AmigoPet</div>
-            <span class="text-600 font-medium">Bem-vindo! Faca login para continuar.</span>
+          <div class="mb-5">
+            <h2>Bem-vindo de volta!</h2>
+            <p>Faca login para acessar sua conta</p>
           </div>
 
           <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-column gap-3">
             <div class="flex flex-column gap-2">
               <label for="email" class="font-medium">E-mail</label>
               <span class="p-input-icon-left w-full">
-                <i class="pi pi-user"></i>
+                <i class="pi pi-envelope"></i>
                 <input pInputText id="email" formControlName="email" type="email" placeholder="seu@email.com" class="w-full" />
               </span>
               <p-message *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" severity="error" text="E-mail invalido"></p-message>
@@ -59,14 +61,22 @@ import { MessageModule } from 'primeng/message';
                 <p-password id="password" formControlName="password" [toggleMask]="true" [feedback]="false" styleClass="w-full" inputStyleClass="w-full" placeholder="Sua senha"></p-password>
               </span>
             </div>
+            <a class="forgot-link" href="#">Esqueceu sua senha?</a>
 
             <p-message *ngIf="error" severity="error" [text]="error"></p-message>
 
             <button pButton label="Entrar" type="submit" [loading]="loading" [disabled]="loginForm.invalid" class="w-full mt-2"></button>
 
-            <div class="text-center mt-3">
-              <span class="text-600">Nao tem uma conta? </span>
-              <a routerLink="/auth/register" class="text-primary font-bold no-underline hover:underline">Cadastre-se</a>
+            <div class="login-divider"><span>ou</span></div>
+
+            <button pButton type="button" class="google-button" [outlined]="true">
+              <span class="google-mark">G</span>
+              <span>Entrar com Google</span>
+            </button>
+
+            <div class="login-register">
+              <span>Nao tem uma conta? </span>
+              <a routerLink="/auth/register">Cadastre-se</a>
             </div>
           </form>
         </div>

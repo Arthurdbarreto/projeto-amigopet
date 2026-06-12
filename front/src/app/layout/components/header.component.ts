@@ -9,25 +9,33 @@ import { ButtonModule } from 'primeng/button';
   standalone: true,
   imports: [CommonModule, ButtonModule],
   template: `
-    <header class="header flex align-items-center justify-content-between px-4 py-2 bg-white shadow-1 fixed top-0 left-0 right-0 z-5" style="height: 60px;">
-      <div class="flex align-items-center gap-3">
-        <button pButton icon="pi pi-bars" class="p-button-text p-button-rounded text-900" (click)="layoutService.toggleSidebar()"></button>
-        <span class="text-2xl font-bold text-primary">AmigoPet</span>
+    <header class="app-header">
+      <div class="app-header__search">
+        <i class="pi pi-search"></i>
+        <input type="text" placeholder="Buscar..." />
       </div>
-      
-      <div class="flex align-items-center gap-3">
-        <span class="hidden md:inline font-medium text-900">Olá, {{ authService.currentUser()?.name }}</span>
-        <button pButton icon="pi pi-sign-out" label="Sair" class="p-button-text p-button-sm" (click)="authService.logout()"></button>
+
+      <div class="app-header__actions">
+        <button pButton icon="pi pi-bars" class="p-button-text p-button-rounded app-menu-toggle" (click)="layoutService.toggleSidebar()"></button>
+        <button pButton icon="pi pi-bell" class="p-button-text p-button-rounded"></button>
+        <div class="app-user">
+          <div class="app-user__avatar">{{ userInitials }}</div>
+          <div>
+            <strong>{{ authService.currentUser()?.name || 'Administrador' }}</strong>
+            <span>{{ authService.currentUser()?.email || 'admin@amigopet.com.br' }}</span>
+          </div>
+        </div>
+        <button pButton icon="pi pi-sign-out" class="p-button-text p-button-rounded" (click)="authService.logout()"></button>
       </div>
     </header>
-  `,
-  styles: [`
-    .header {
-      border-bottom: 1px solid #e5e7eb;
-    }
-  `]
+  `
 })
 export class HeaderComponent {
   authService = inject(AuthService);
   layoutService = inject(LayoutService);
+
+  get userInitials() {
+    const name = this.authService.currentUser()?.name || 'Administrador';
+    return name.split(' ').map(part => part[0]).join('').slice(0, 2).toUpperCase();
+  }
 }

@@ -1,0 +1,20 @@
+'Log files:
+C:\Users\tupai\OneDrive\Área de Trabalho\amigo_pet\projeto-amigopet\front\.npm-cache\_logs\2026-06-10T19_45_31_594Z-debug-0.log
+
+# npm resolution error report
+
+While resolving: amigopet-front@1.0.0
+Found: @angular-devkit/build-angular@16.2.16
+node_modules/@angular-devkit/build-angular
+  dev @angular-devkit/build-angular@"^19.0.0" from the root project
+
+Could not resolve dependency:
+dev @angular-devkit/build-angular@"^19.0.0" from the root project
+
+Conflicting peer dependency: typescript@5.5.4
+node_modules/typescript
+  peer typescript@">=5.5 <5.9" from @angular-devkit/build-angular@19.2.27
+  node_modules/@angular-devkit/build-angular
+    dev @angular-devkit/build-angular@"^19.0.0" from the root project
+
+Fix the upstream dependency conflict, or retry this command with --force or --legacy-peer-deps to accept an incorrect (and potentially broken) dependency resolution.
